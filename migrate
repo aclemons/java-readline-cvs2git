@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# Migrate java-readline from sf cvs to a git repository using cvs2svn and svn-all-fast-export
+
+set -e
+
+for cmd in cvs2svn svn-all-fast-export ; do
+  if ! command -v "$cmd" > /dev/null 2>&1 ; then
+    >&2 echo "This script requires $cmd to run."
+    exit 1
+  fi
+done
+
+if [ -e svn ] ; then
+  rm -rf svn
+fi
+
+rsync -av --delete rsync://java-readline.cvs.sourceforge.net/cvsroot/java-readline/* cvs/
+
+./cvs2svn-2.4.0/cvs2svn --options options
+
+if [ -e java-readline ] ; then
+  rm -rf java-readline
+fi
+
+svn-all-fast-export --rules rules --svn-branches --identity-map authors --add-metadata svn
+git repack -a -d -f
+
+if [ ! -e kde-ruleset ] ; then
+  git clone https://github.com/KDE/kde-ruleset
+fi
+
+(
+  cd kde-ruleset
+  git remote update --prune
+  git reset --hard origin/master
+  sed 's/\.XXXXX /.XXXXXX /g' bin/filter-goodies > bin/filter-goodies.new && mv bin/filter-goodies.new bin/filter-goodies
+)
+
+RULESETDIR="$(pwd)"/kde-ruleset
+export RULESETDIR
+
+(
+  cd java-readline
+
+  git filter-branch --index-filter 'git rm -r --cached --ignore-unmatch CVSROOT' --tag-name-filter cat -- --all
+  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+
+  git filter-branch --tag-name-filter cat -f --prune-empty --subdirectory-filter java-readline -- --all
+  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+
+  "$RULESETDIR/bin/fix-tags"
+  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+
+  "$RULESETDIR/bin/fix-tags"
+  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+
+  git reflog expire --expire=now --all
+  git gc --prune=now
+  git gc --aggressive --prune=now
+)

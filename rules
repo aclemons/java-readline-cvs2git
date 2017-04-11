@@ -1,0 +1,17 @@
+create repository java-readline
+end repository
+
+match /branches/([^/]+)/
+  repository java-readline
+  branch \1
+end match
+
+match /tags/([^/]+)/
+  repository java-readline
+  branch refs/tags/\1
+end match
+
+match /trunk/
+  repository java-readline
+  branch master
+end match
