@@ -62,40 +62,29 @@ svn-all-fast-export --rules rules --svn-branches --identity-map authors --add-me
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
   # update some authors based on NEWS
-  change_author "$(echo "42" | $RULESETDIR/bin/translateRevlist.py)" "Erik" "erik@skiinfo.fr"
+  change_author "$(echo "42" | "$RULESETDIR/bin/translateRevlist.py")" "Erik" "erik@skiinfo.fr"
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
-  change_author "$(echo "53" | $RULESETDIR/bin/translateRevlist.py)" "David Dribin" "dave@dribin.org"
+  change_author "$(echo "53" | "$RULESETDIR/bin/translateRevlist.py")" "David Dribin" "dave@dribin.org"
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
-  change_author "$(echo "55" | $RULESETDIR/bin/translateRevlist.py)" "Shane Celis" "shane@terrapsring.com"
+  for rev in 55 57 ; do
+    change_author "$(echo "$rev" | "$RULESETDIR/bin/translateRevlist.py")" "Shane Celis" "shane@terrapsring.com"
+    "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+  done
+
+  for rev in 120 121 122 131 132 ; do
+    change_author "$(echo "$rev" | "$RULESETDIR/bin/translateRevlist.py")" "Henner Zeller" "h.zeller@acm.org"
+    "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+  done
+
+  change_author "$(echo "124" | "$RULESETDIR/bin/translateRevlist.py")" "Steve Cohen" "stevec@ignitesports.com"
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
-  change_author "$(echo "57" | $RULESETDIR/bin/translateRevlist.py)" "Shane Celis" "shane@terrapsring.com"
+  change_author "$(echo "143" | "$RULESETDIR/bin/translateRevlist.py")" "Brian Clapper" "bmc@clapper.org"
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
-  change_author "$(echo "120" | $RULESETDIR/bin/translateRevlist.py)" "Henner Zeller" "h.zeller@acm.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "121" | $RULESETDIR/bin/translateRevlist.py)" "Henner Zeller" "h.zeller@acm.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "122" | $RULESETDIR/bin/translateRevlist.py)" "Henner Zeller" "h.zeller@acm.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "124" | $RULESETDIR/bin/translateRevlist.py)" "Steve Cohen" "stevec@ignitesports.com"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "131" | $RULESETDIR/bin/translateRevlist.py)" "Henner Zeller" "h.zeller@acm.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "132" | $RULESETDIR/bin/translateRevlist.py)" "Henner Zeller" "h.zeller@acm.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "143" | $RULESETDIR/bin/translateRevlist.py)" "Brian Clapper" "bmc@clapper.org"
-  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
-
-  change_author "$(echo "175" | $RULESETDIR/bin/translateRevlist.py)" "Samer Abdallah" "samer.abdallah@elec.qmul.ac.uk"
+  change_author "$(echo "175" | "$RULESETDIR/bin/translateRevlist.py")" "Samer Abdallah" "samer.abdallah@elec.qmul.ac.uk"
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
   "$RULESETDIR/bin/fix-tags"
