@@ -16,6 +16,8 @@ fi
 ' -- --all
 }
 
+CWD="$(pwd)"
+
 for cmd in cvs2svn svn-all-fast-export ; do
   if ! command -v "$cmd" > /dev/null 2>&1 ; then
     >&2 echo "This script requires $cmd to run."
@@ -49,7 +51,7 @@ fi
 RULESETDIR="$(pwd)"/kde-ruleset
 export RULESETDIR
 
-svn-all-fast-export --rules rules --svn-branches --identity-map authors --add-metadata svn
+svn-all-fast-export --rules rules --svn-branches --identity-map authors --propcheck --svn-ignore --add-metadata svn
 
 (
   cd java-readline
@@ -91,6 +93,10 @@ svn-all-fast-export --rules rules --svn-branches --identity-map authors --add-me
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
   "$RULESETDIR/bin/fix-tags"
+  "$RULESETDIR/bin/remove-fb-backup-refs.sh"
+
+  # now that we have all the author information, we can remove the meaningless svn revision numbers
+  git filter-branch --tag-name-filter cat -f --msg-filter "$CWD/msg-filter" --prune-empty -- --all
   "$RULESETDIR/bin/remove-fb-backup-refs.sh"
 
   git reflog expire --expire=now --all

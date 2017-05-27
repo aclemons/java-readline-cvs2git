@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+This is used by git filter-branch to post process the commit messages.
+
+This strips the svn metadata lines back out of the commit messages
+after we have finished any other post-processing.
+'''
+
+import sys
+
+if len(sys.argv) < 2:
+    input_file = sys.stdin
+else:
+    print >> sys.stderr, "usage: migrate_msg.py"
+    sys.exit(1)
+
+msg = "".join((line.rstrip() + '\n') for line in input_file)
+lines = msg.splitlines()
+
+while (len(lines) > 0):
+    if not lines[-1]:
+        del lines[-1]
+    else:
+        break
+
+while (len(lines) > 0):
+    if not lines[0]:
+        del lines[0]
+    else:
+        break
+
+# remove the svn2git metadata line
+del lines[-1]
+
+while (len(lines) > 0):
+    if not lines[-1]:
+        del lines[-1]
+    else:
+        break
+
+msg = "".join((line + '\n') for line in lines)
+
+sys.stdout.write(msg)
